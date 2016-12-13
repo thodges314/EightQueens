@@ -1,14 +1,42 @@
+var myBoard;
+
 document.addEventListener('DOMContentLoaded', function() {
-    var myBoard = GenerateBoard();
+    myBoard = GenerateBoard();
     myBoard.drawBoard(8);
-    myBoard.downQueen(1);
+    recursiveDrop(1);
 }, false);
+
+function recursiveDrop(j) {
+    var steps = myBoard.getSize();
+    var cy = d3.select("svg")
+    .select("#q"+j)
+    .attr("cy");
+    cy = parseInt(cy);
+    cy = (cy-40)/80;
+    //alert(cy+" <= "+ steps + " : " + (cy<=steps));
+    if(cy <= steps){
+        myBoard.downQueen(j);
+        setTimeout(function(){new recursiveDrop(j)}, 700);
+    };
+}
 
 function GenerateBoard() {
     var size;
     var board = [];
     var DELTA_X = 80;
     var DELTA_Y = 80;
+    
+    function getSize(){
+        return this.size;
+    }
+    
+    function getDimensionX() {
+        return DELTA_X;
+    }
+    
+    function getDimensionY() {
+        return DELTA_Y;
+    }
     
     //draws a board of size size - intialises the size variable;
     function drawBoard(size){
@@ -175,26 +203,30 @@ function GenerateBoard() {
     function downQueen(j){
         var cy = d3.select("svg")
         .select("#q"+ j)
-        .attr("cy");
-        
+        .attr("cy");       
         cy = parseInt(cy);
-        
-        //alert("y location:" + cy);
-        
         cy += 80;
-        
-         //alert("y location:" + newCy);
-        
+        newSlot=(cy-40)/80;
+
         d3.select("svg")
         .select("#q" + j)
         .transition()
         .duration(500)
         .attr("cy", cy);
         
+        if(newSlot > 0)
+            board[j][newSlot - 1] = 0;
+        if(newSlot < size)
+            board[j][newSlot] = 1;
+        
+        
     }
     
     return{
         drawBoard: drawBoard,
+        getSize: getSize,
+        getDimensionX: getDimensionX,
+        getDimensionY: getDimensionY,
         check: check,
         downQueen: downQueen
     }
