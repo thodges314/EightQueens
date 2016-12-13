@@ -128,7 +128,7 @@ function GenerateBoard() {
         if(i >= j){
             var diff = i - j;
             for(k = diff; k<this.size; k++){
-                if ((board[k][k-diff] == 1) && (k!=i)){
+                if ((board[k-diff][k] == 1) && (k!=i)){
                     drLine(i,j);
                     isClear = false;
                 }
@@ -136,30 +136,31 @@ function GenerateBoard() {
         } else {
             var diff = j - i;
             for(k = diff; k<this.size; k++){
-                if ((board[k-diff][k] == 1) && (k!=j)){
+                if ((board[k][k-diff] == 1) && (k!=j)){
                     dlLine(i,j);
                     isClear = false;
                 };
             };
         };
-/*        //check diagonal left
+        //check diagonal left
         if((i+j)<this.size){
             var sum = i+j;
             for(k=0; k<=sum; k++){
-                if((board[k][sum-k] == 1) & (k!=i)){
+                if((board[k][sum-k] == 1) & (k!=j)){
                     dlLine(i,j);
                     isClear = false;
                 };
             };
         } else {
-            var sum = i+j-(this.size-1);
-            for(k = sum; k<this.size; k++){
-                if((board[k][this.size-1-k] === 1) & (k!=i)){
+            var sum = i+j;
+            var end = size-1;
+            for(k = sum - end; k<this.size; k++){
+                if((board[sum-k][k] == 1) & (k!=i)){
                     dlline(i,j);
                     isClear = false;
                 };
             };
-        };*/
+        };
         return isClear;  
     }
     
