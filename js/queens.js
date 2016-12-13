@@ -60,14 +60,14 @@ function recursiveTest(j) {
 }
 
 function GenerateBoard() {
-    var size;
+    var boardSize;
     var board = [];
     var DELTA_X = 80;
     var DELTA_Y = 80;
     var DROPTIME = 500;
     
     function getSize(){
-        return this.size;
+        return boardSize;
     }
     
     function getDimensionX() {
@@ -80,16 +80,16 @@ function GenerateBoard() {
     
     //draws a board of size size - intialises the size variable;
     function drawBoard(size){
-        this.size = size;
-        for(j = 0; j< this.size; j++){
+        boardSize = size;
+        for(j = 0; j< boardSize; j++){
             board[j] = [];
-            for(i=0; i<this.size; i++)
+            for(i=0; i<boardSize; i++)
                 board[j][i] = 0;
         };
         d3.select("svg").attr("style","height: "+size*DELTA_Y+"px; width: "+size*DELTA_X+"px;");
         //draw boxes
-        for(i = 0; i<this.size; i++){
-            for(j = 0; j<this.size; j++){
+        for(i = 0; i<boardSize; i++){
+            for(j = 0; j<boardSize; j++){
                 d3.select("svg")
                 .append("rect")
                 .attr("width", DELTA_X)
@@ -102,7 +102,7 @@ function GenerateBoard() {
             }
         }
         //draw hidden queens
-        for(i=0; i<this.size; i++){
+        for(i=0; i<boardSize; i++){
             d3.select("svg")
             .append("circle")
             .attr("id", "q"+i)
@@ -117,7 +117,7 @@ function GenerateBoard() {
     function check(i, j){
         var isClear = true;
         //check horizontal
-        for(k = 0; k<this.size; k++){
+        for(k = 0; k<boardSize; k++){
             //console.log(board[k][i]);
             if ((board[k][i] == 1) && (k != j)){
                 hLine(i);
@@ -127,7 +127,7 @@ function GenerateBoard() {
         //check diagonal right
         if(i >= j){
             var diff = i - j;
-            for(k = diff; k<this.size; k++){
+            for(k = diff; k<boardSize; k++){
                 if ((board[k-diff][k] == 1) && (k!=i)){
                     drLine(i,j);
                     isClear = false;
@@ -135,7 +135,7 @@ function GenerateBoard() {
             }
         } else {
             var diff = j - i;
-            for(k = diff; k<this.size; k++){
+            for(k = diff; k<boardSize; k++){
                 if ((board[k][k-diff] == 1) && (k!=j)){
                     dlLine(i,j);
                     isClear = false;
@@ -143,7 +143,7 @@ function GenerateBoard() {
             };
         };
         //check diagonal left
-        if((i+j)<this.size){
+        if((i+j)<boardSize){
             var sum = i+j;
             for(k=0; k<=sum; k++){
                 if((board[k][sum-k] == 1) & (k!=j)){
@@ -153,8 +153,8 @@ function GenerateBoard() {
             };
         } else {
             var sum = i+j;
-            var end = size-1;
-            for(k = sum - end; k<this.size; k++){
+            var end = boardSize-1;
+            for(k = sum - end; k<boardSize; k++){
                 if((board[sum-k][k] == 1) & (k!=i)){
                     dlline(i,j);
                     isClear = false;
@@ -166,58 +166,55 @@ function GenerateBoard() {
     
     //draw a horizontal line across the board from point in row i.
     function hLine(i){
-        var x1 = DELTA_X/2;
-        var x2 = (size * DELTA_X) - (DELTA_X / 2);
-        var y = (size * i * DELTA_Y) - (DELTA_Y / 2);
-        
+        var x1 = scaleUp(0);
+        var x2 = scaleUp(boardSize);
+        var y = scaleUp(i);        
         drawLine(x1, x2, y, y);
-    }
-    
-    //draw a vertical line across the board from point in column j.
-    function vLine(j){
-        var x = (size * i * DELTA_X) - (DELTA_X / 2);
-        var y1 = DELTA_Y/2;
-        var y2 = (size * DELTA_Y) - (DELTA_Y / 2);
-        
-        drawLine(x, x, y1, y2);
+        //alert("i:" + i+ " x1:"+x1+ " x2:"+x2+" y1:"+y+ " y2:"+y);
     }
     
     //draw a diagonal line moving down to the right
     function drLine(i, j){
         if(i >= j){
             var diff = i - j;
-            var x1 = 0;
-            var x2 = size - 1 - diff;
-            var y1 = diff;
-            var y2 = size-1;
+            var x1 = scaleUp(diff);
+            var y1 = scaleUp(0);
+            var x2 = scaleUp(boardSize - 1);
+            var y2 = scaleUp(boardSize - 1 - diff);
             drawLine(x1, x2, y1, y2);
         } else {
             var diff = j - i;
-            var x1 = diff;
-            var x2 = size - 1;
-            var y1 = 0;
-            var y2 = size - 1 - diff;
+            var x1 = scaleUp(0);
+            var y1 = scaleUp(diff);
+            var x2 = scaleUp(boardSize - 1 - diff);
+            var y2 = scaleUp(boardSize - 1);
             drawLine(x1, x2, y1, y2);
         }
     }
     
     //draw a diagonal line moving down to the left 
     function dlLine(i, j){
-        if((i+j) < size){
+        if((i+j) < boardSize){
             var sum = i + j;
-            var x1 = 0;
-            var y1 = sum;
-            var x2 = sum;
-            var y2 = 0;
+            var x1 = scaleUp(0);
+            var y1 = scaleUp(sum);
+            var x2 = scaleUp(sum);
+            var y2 = scaleUp(0);
             drawLine(x1, x2, y1, y2);
         } else {
             var sum = i + j;
-            var x1 = sum - size + 1;
-            var y1 = size - 1;
-            var x2 = size - 1;
-            var y2 = sum - size + 1;
+            var x1 = scaleUp(sum - boardSize + 1);
+            var y1 = scaleUp(boardSize - 1);
+            var x2 = scaleUp(boardSize - 1);
+            var y2 = scaleUp(sum - boardSize + 1);
             drawLine(x1, x2, y1, y2);
         }
+    }
+    
+    function scaleUp(val){
+        val *= DELTA_X;
+        val += DELTA_X/2;
+        return val;
     }
     
     function drawLine(x1, x2, y1, y2){
@@ -254,7 +251,7 @@ function GenerateBoard() {
         
         if(newSlot > 0)
             board[j][newSlot - 1] = 0;
-        if(newSlot < this.size)
+        if(newSlot < boardSize)
             board[j][newSlot] = 1;  
         //console.log("board["+j+"]["+(newSlot)+"] = "+ board[j][newSlot]);
         
