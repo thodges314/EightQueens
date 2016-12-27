@@ -64,7 +64,7 @@ function GenerateQueen() {
     var jPos;   //jPos.  frequently changes
     var delta;  //delta.  length/width of chess box
 
-    function getI() {
+    function getI() {   //possibly unused and can be deleted
         return iPos;
     }
 
@@ -84,6 +84,8 @@ function GenerateQueen() {
         .attr("cx", (iPos * delta) + (delta / 2))
         .attr("cy", (jPos * delta) + (delta / 2))
         .style("fill", "blue");
+
+        console.log("draw i:"+i+", j:"+j);
     }
 
     function moveQueen(dropTime) {   //animates motion to present jPos
@@ -137,12 +139,8 @@ function GenerateBoard() {
     
     //draws a board of size size - intialises the size variable;
     function drawBoard(size){
-        boardSize = size;
-        for(j = 0; j< boardSize; j++){
-            board[j] = [];
-            for(i=0; i<boardSize; i++)
-                board[j][i] = 0;
-        };
+        boardSize = size;   //set boardSize attribute
+
         d3.select("svg").attr("style","height: "+size*DELTA+"px; width: "+size*DELTA+"px;");
         //draw boxes
         for(i = 0; i<boardSize; i++){
@@ -158,11 +156,10 @@ function GenerateBoard() {
                 .style("stroke-width", "1px");       
             }
         }
-        //draw hidden queens
-        for(i=0; i<boardSize; i++){
-
-            //draw queens to populate board array here
-
+        //populate board array with hidden queens
+        for(i = 0; i < boardSize; i++){
+            board[i] = new GenerateQueen();
+            board[i].drawQueen(i, -1, DELTA);
         }
     }
     
@@ -171,47 +168,47 @@ function GenerateBoard() {
         var isClear = true;
         //check horizontal
         for(k = 0; k<boardSize; k++){
-            //console.log(board[k][i]);
-            if ((board[k][i] == 1) && (k != j)){
-                hLine(i);
+             if ((board[k] == j) && (k != i)){
+                hLine(j);
                 isClear = false;
             };
         };
-        //check diagonal right
+        //check diagonal down-right
         if(i >= j){
             var diff = i - j;
-            for(k = diff; k<boardSize; k++){
-                if ((board[k-diff][k] == 1) && (k!=i)){
+            var start = diff;
+            var end = boardSize - 1;
+            for(k = start; k<=end; k++){
+                if ((board[k] == (k - diff)) && (k!=i)){
                     drLine(i,j);
                     isClear = false;
                 }
             }
         } else {
             var diff = j - i;
-            for(k = diff; k<boardSize; k++){
-                if ((board[k][k-diff] == 1) && (k!=j)){
+            var start = 0;
+            var end = boardSize - diff - 1;
+            for(k = start; k<=end; k++){
+                if ((board[k] == (i + diff)) && (k!=i)){
                     dlLine(i,j);
                     isClear = false;
                 };
             };
         };
-        //check diagonal left
-        if((i+j)<boardSize){
-            var sum = i+j;
+        //check diagonal down-left
+        var sum = i + j;
+        if( sum < boardSize){
             for(k=0; k<=sum; k++){
-                if((board[k][sum-k] == 1) & (k!=j)){
+                if((board[k] == (sum - k)) & (k!=i)){
                     dlLine(i,j);
                     isClear = false;
                 };
             };
         } else {
-            var sum = i + j;
             var start = sum - boardSize + 1;
             var end = boardSize - 1;
-            // var end = boardSize-1;
             for(k = start; k<=end; k++){
-                if((board[k][sum - k] == 1) & (k!=i)){
-                    console.log("i:"+k+", j:"+(sum- k));
+                if((board[k] == (sum - k)) & (k!=i)){
                     dlLine(i,j);
                     isClear = false;
                 };
@@ -289,43 +286,14 @@ function GenerateBoard() {
         d3.select("svg").selectAll("line").remove();
     }
     
-    //advances queen in column j down by 1, checks validity, returns true if clear and false if not clear
-    function downQueen(j){
-        clearLines(); 
-        var cy = d3.select("svg")
-        .select("#q"+ j)
-        .attr("cy");       
-        cy = parseInt(cy);
-        cy += DELTA;
-        newSlot=(cy-(DELTA/2))/DELTA;
-
-        d3.select("svg")
-        .select("#q" + j)
-        .transition()
-        .duration(DROPTIME)
-        .attr("cy", cy);
-        
-        if(newSlot > 0)                 //this is needed here somehow
-            board[j][newSlot - 1] = 0;
-        if(newSlot < boardSize)
-            board[j][newSlot] = 1;  
-        //console.log("board["+j+"]["+(newSlot)+"] = "+ board[j][newSlot]);
-        
+    //advances queen in column i down by 1, checks validity, returns true if clear and false if not clear
+    function downQueen(i){
+        board[i].downQueen(DROPTIME);
+        return check(i, board[i].getJ);
     }
     
-    function resetQueen(j) {
-        board[j] = [];
-        d3.select("svg")
-        .select("#q"+j)
-        .remove();
-        
-        d3.select("svg")
-            .append("circle")
-            .attr("id", "q"+j)
-            .attr("r", DELTA/2 + "px")
-            .attr("cx", (j * DELTA) + (DELTA / 2))
-            .attr("cy", -1*(DELTA / 2))
-            .style("fill", "blue");
+    function resetQueen(i) {
+        board[i].resetQueen(DROPTIME);
     }
     
     return{
