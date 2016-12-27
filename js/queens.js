@@ -6,37 +6,37 @@ document.addEventListener('DOMContentLoaded', function() {
     recursiveTest(0);
 }, false);
 
-function recursiveDrop(j) {
+function recursiveDrop(i) {
     var DROPPAUSE = 700;
     var yDim = myBoard.getDimensionY();
     var halfYDim = yDim/2;
     var steps = myBoard.getSize();
     var cy = d3.select("svg")
-    .select("#q"+j)
+    .select("#q"+i)
     .attr("cy");
     cy = parseInt(cy);
     cy = (cy-halfYDim)/yDim;
     if(cy <= steps){
-        myBoard.downQueen(j);
-        setTimeout(function(){new recursiveDrop(j)}, DROPPAUSE);
+        myBoard.downQueen(i);
+        setTimeout(function(){new recursiveDrop(i)}, DROPPAUSE);
     } else {
-        myBoard.resetQueen(j);
-        setTimeout(function(){new recursiveDrop(j)}, DROPPAUSE);
+        myBoard.resetQueen(i);
+        setTimeout(function(){new recursiveDrop(i)}, DROPPAUSE);
         
     }
 
 }
 
-function recursiveTest(j) {
+function recursiveTest(i) {
     var DROPPAUSE = 700;
     var yDim = myBoard.getDimensionY();
     var halfYDim = yDim/2;
     var steps = myBoard.getSize();
-    var i = getPosition();
+    var j = getPosition();
     
-    if(i <= steps){
-        myBoard.downQueen(j);
-        if(myBoard.check((i+1), j))
+    if(j < steps){
+        myBoard.downQueen(i);
+        if(myBoard.check(i, j+1))
             setTimeout(function(){new recursiveTest(j+1)}, DROPPAUSE);
         else
             setTimeout(function(){new recursiveTest(j)}, DROPPAUSE);
@@ -59,11 +59,68 @@ function recursiveTest(j) {
     
 }
 
+function GenerateQueen() {
+    var iPos;   //iPos.  remains permanent once instantiated
+    var jPos;   //jPos.  frequently changes
+    var delta;  //delta.  length/width of chess box
+
+    function getI() {
+        return iPos;
+    }
+
+    function getJ() {
+        return jPos;
+    }
+
+    function drawQueen(i, j, delta) {
+        iPos = i;
+        jPos = j;
+        this.delta = delta;
+
+        d3.select("svg")
+        .append("circle")
+        .attr("id", "q"+iPos)
+        .attr("r", delta/2 + "px")
+        .attr("cx", (iPos * delta) + (delta / 2))
+        .attr("cy", (jPos * delta) + (delta / 2))
+        .style("fill", "blue");
+    }
+
+    function moveQueen(dropTime) {   //animates motion to present jPos
+        myBoard.clearLines();
+
+        var cy = jPos*(delta) + (delta/2); 
+
+        d3.select("svg")
+        .select("#q" + iPos)
+        .transition()
+        .duration(dropTime)
+        .attr("cy", cy);
+    }
+
+    function downQueen(dropTime) {  //sets new jPos, calls animation
+        jPos += 1;
+        moveQueen(dropTime);
+    }
+
+    function resetQueen(dropTime) { //resets jPos, calls animation
+        jPos = -1;
+        moveQueen(dropTime);
+    }
+
+    return {
+        getI: getI,                 //returns i position
+        getJ: getJ,                 //returns j position
+        drawQueen: drawQueen,       //instantiates queen with i, j, delta
+        downQueen: downQueen,       //drops queen one space
+        resetQueen: resetQueen      //resets queen to top
+    }
+}
+
 function GenerateBoard() {
     var boardSize;
     var board = [];
-    var DELTA_X = 80;
-    var DELTA_Y = 80;
+    var DELTA = 80;
     var DROPTIME = 500;
     
     function getSize(){
@@ -71,11 +128,11 @@ function GenerateBoard() {
     }
     
     function getDimensionX() {
-        return DELTA_X;
+        return DELTA;
     }
     
     function getDimensionY() {
-        return DELTA_Y;
+        return DELTA;
     }
     
     //draws a board of size size - intialises the size variable;
@@ -86,16 +143,16 @@ function GenerateBoard() {
             for(i=0; i<boardSize; i++)
                 board[j][i] = 0;
         };
-        d3.select("svg").attr("style","height: "+size*DELTA_Y+"px; width: "+size*DELTA_X+"px;");
+        d3.select("svg").attr("style","height: "+size*DELTA+"px; width: "+size*DELTA+"px;");
         //draw boxes
         for(i = 0; i<boardSize; i++){
             for(j = 0; j<boardSize; j++){
                 d3.select("svg")
                 .append("rect")
-                .attr("width", DELTA_X)
-                .attr("height", DELTA_Y)
-                .attr("x", function(){ return (i * DELTA_X);})
-                .attr("y", function(){ return (j * DELTA_Y);})
+                .attr("width", DELTA)
+                .attr("height", DELTA)
+                .attr("x", function(){ return (i * DELTA);})
+                .attr("y", function(){ return (j * DELTA);})
                 .style("fill", function(){return((i+j)%2 ==0)? "black": "white"})
                 .style("stroke", "black")
                 .style("stroke-width", "1px");       
@@ -103,13 +160,9 @@ function GenerateBoard() {
         }
         //draw hidden queens
         for(i=0; i<boardSize; i++){
-            d3.select("svg")
-            .append("circle")
-            .attr("id", "q"+i)
-            .attr("r", DELTA_Y/2 + "px")
-            .attr("cx", (i * DELTA_X) + (DELTA_X / 2))
-            .attr("cy", -1*(DELTA_Y / 2))
-            .style("fill", "blue");
+
+            //draw queens to populate board array here
+
         }
     }
     
@@ -152,11 +205,14 @@ function GenerateBoard() {
                 };
             };
         } else {
-            var sum = i+j;
-            var end = boardSize-1;
-            for(k = sum - end; k<boardSize; k++){
-                if((board[sum-k][k] == 1) & (k!=i)){
-                    dlline(i,j);
+            var sum = i + j;
+            var start = sum - boardSize + 1;
+            var end = boardSize - 1;
+            // var end = boardSize-1;
+            for(k = start; k<=end; k++){
+                if((board[k][sum - k] == 1) & (k!=i)){
+                    console.log("i:"+k+", j:"+(sum- k));
+                    dlLine(i,j);
                     isClear = false;
                 };
             };
@@ -212,8 +268,8 @@ function GenerateBoard() {
     }
     
     function scaleUp(val){
-        val *= DELTA_X;
-        val += DELTA_X/2;
+        val *= DELTA;
+        val += DELTA/2;
         return val;
     }
     
@@ -235,13 +291,13 @@ function GenerateBoard() {
     
     //advances queen in column j down by 1, checks validity, returns true if clear and false if not clear
     function downQueen(j){
-        clearLines();
+        clearLines(); 
         var cy = d3.select("svg")
         .select("#q"+ j)
         .attr("cy");       
         cy = parseInt(cy);
-        cy += DELTA_Y;
-        newSlot=(cy-(DELTA_Y/2))/DELTA_Y;
+        cy += DELTA;
+        newSlot=(cy-(DELTA/2))/DELTA;
 
         d3.select("svg")
         .select("#q" + j)
@@ -249,7 +305,7 @@ function GenerateBoard() {
         .duration(DROPTIME)
         .attr("cy", cy);
         
-        if(newSlot > 0)
+        if(newSlot > 0)                 //this is needed here somehow
             board[j][newSlot - 1] = 0;
         if(newSlot < boardSize)
             board[j][newSlot] = 1;  
@@ -266,9 +322,9 @@ function GenerateBoard() {
         d3.select("svg")
             .append("circle")
             .attr("id", "q"+j)
-            .attr("r", DELTA_Y/2 + "px")
-            .attr("cx", (j * DELTA_X) + (DELTA_X / 2))
-            .attr("cy", -1*(DELTA_Y / 2))
+            .attr("r", DELTA/2 + "px")
+            .attr("cx", (j * DELTA) + (DELTA / 2))
+            .attr("cy", -1*(DELTA / 2))
             .style("fill", "blue");
     }
     
