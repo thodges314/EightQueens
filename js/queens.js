@@ -161,7 +161,6 @@ function GenerateBoard() {
             for(k=0; k<=sum; k++){
                 if((board[k].getJ() == (sum - k)) & (k!=i)){
                     dlLine(i,j);
-                    console.log("Conflict: " + k + ", " + board[k].getJ() );
                     isClear = false;
                 };
             };
@@ -171,7 +170,6 @@ function GenerateBoard() {
             for(k = start; k<=end; k++){
                 if((board[k].getJ() == (sum - k)) & (k!=i)){
                     dlLine(i,j);
-                    console.log("Conflict: " + k + ", " + board[k].getJ() );
                     isClear = false;
                 };
             };
@@ -253,7 +251,6 @@ function GenerateBoard() {
     //advances queen in column i down by 1, checks validity, returns true if clear and false if not clear
     function downQueen(i){
         board[i].downQueen(DROPTIME);
-        console.log("i: " + i + ", j: "+ board[i].getJ() + ", check: " + check(i, board[i].getJ()));
         return check(i, board[i].getJ());
     }
     
