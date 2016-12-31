@@ -3,20 +3,23 @@ var myBoard;
 document.addEventListener('DOMContentLoaded', function() {
     myBoard = GenerateBoard();
     myBoard.drawBoard(8);
-    recursiveColumnTest(0);
+    recursiveTest(0);
 }, false);
 
-function recursiveColumnTest(i) {
+function recursiveTest(i) {
     var DROPPAUSE = 700;
     steps = myBoard.getSize() - 1;
-    console.log("steps: " + steps);
-    console.log("getPositionQueen: " + myBoard.getPositionQueen(i));
+    //console.log("steps: " + steps);
+    //console.log("getPositionQueen: " + myBoard.getPositionQueen(i));
     if (myBoard.getPositionQueen(i) < steps){
-        myBoard.downQueen(i);
-        setTimeout(function(){new recursiveColumnTest(i)}, DROPPAUSE);
+        if (myBoard.downQueen(i) && (i < steps)){
+            setTimeout(function(){new recursiveTest(i + 1)}, DROPPAUSE);
+        } else {
+            setTimeout(function(){new recursiveTest(i)}, DROPPAUSE);
+        }
     } else {
         myBoard.resetQueen(i);
-        setTimeout(function(){new recursiveColumnTest(i)}, DROPPAUSE);
+        setTimeout(function(){new recursiveColumnTest(i - 1)}, DROPPAUSE);
     }
     //myBoard.downQueen(0);
 
@@ -182,7 +185,7 @@ function GenerateBoard() {
         var isClear = true;
         //check horizontal
         for(k = 0; k<boardSize; k++){
-             if ((board[k].getJ == j) && (k != i)){
+             if ((board[k].getJ() == j) && (k != i)){
                 hLine(j);
                 isClear = false;
             };
@@ -193,7 +196,7 @@ function GenerateBoard() {
             var start = diff;
             var end = boardSize - 1;
             for(k = start; k<=end; k++){
-                if ((board[k].getJ == (k - diff)) && (k!=i)){
+                if ((board[k].getJ() == (k - diff)) && (k!=i)){
                     drLine(i,j);
                     isClear = false;
                 }
@@ -203,7 +206,7 @@ function GenerateBoard() {
             var start = 0;
             var end = boardSize - diff - 1;
             for(k = start; k<=end; k++){
-                if ((board[k].getJ == (i + diff)) && (k!=i)){
+                if ((board[k].getJ() == (k + diff)) && (k!=i)){
                     dlLine(i,j);
                     isClear = false;
                 };
@@ -303,7 +306,8 @@ function GenerateBoard() {
     //advances queen in column i down by 1, checks validity, returns true if clear and false if not clear
     function downQueen(i){
         board[i].downQueen(DROPTIME);
-        return check(i, board[i].getJ);
+        console.log("i: " + i + ", j: "+ board[i].getJ() + ", check: " + check(i, board[i].getJ()));
+        return check(i, board[i].getJ());
     }
     
     function resetQueen(i) {
