@@ -128,11 +128,11 @@ function GenerateBoard() {
         var isClear = true;
         //check horizontal
         for(k = 0; k<boardSize; k++){
-             if ((board[k].getJ() == j) && (k != i)){
-                hLine(j);
-                isClear = false;
-            };
+           if ((board[k].getJ() == j) && (k != i)){
+            hLine(j);
+            isClear = false;
         };
+    };
         //check diagonal down-right
         if(i >= j){
             var diff = i - j;
@@ -233,15 +233,17 @@ function GenerateBoard() {
     }
     
     function drawLine(x1, x2, y1, y2){
-        d3.select("svg")
-        .append("line")
-        .attr("x1", x1)
-        .attr("x2", x2)
-        .attr("y1", y1)
-        .attr("y2", y2)
-        .style("stroke", "red")
-        .style("stroke-width", "20px")
-        .style("opacity", 50);
+        setTimeout(function(){
+            d3.select("svg")
+            .append("line")
+            .attr("x1", x1)
+            .attr("x2", x2)
+            .attr("y1", y1)
+            .attr("y2", y2)
+            .style("stroke", "red")
+            .style("stroke-width", "20px")
+            .style("opacity", 50);
+        }, (DROPTIME/2));
     }
     
     function clearLines(){
