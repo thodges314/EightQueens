@@ -3,12 +3,23 @@ var myBoard;
 document.addEventListener('DOMContentLoaded', function() {
     myBoard = GenerateBoard();
     myBoard.drawBoard(8);
-    recursiveTest(0);
+    recursiveColumnTest(0);
 }, false);
 
-function recursiveTest(i) {
+function recursiveColumnTest(i) {
     var DROPPAUSE = 700;
-    myBoard.downQueen(0);
+    steps = myBoard.getSize() - 1;
+    console.log("steps: " + steps);
+    console.log("getPositionQueen: " + myBoard.getPositionQueen(i));
+    if (myBoard.getPositionQueen(i) < steps){
+        myBoard.downQueen(i);
+        setTimeout(function(){new recursiveColumnTest(i)}, DROPPAUSE);
+    } else {
+        myBoard.resetQueen(i);
+        setTimeout(function(){new recursiveColumnTest(i)}, DROPPAUSE);
+    }
+    //myBoard.downQueen(0);
+
 }
 
 // function recursiveDrop(i) {
@@ -137,7 +148,7 @@ function GenerateBoard() {
     }
 
     function getPositionQueen(i) {
-        return board[i].getJ;
+        return board[i].getJ();
     }
     
     //draws a board of size size - intialises the size variable;
@@ -163,7 +174,6 @@ function GenerateBoard() {
         for(i = 0; i < boardSize; i++){
             board[i] = new GenerateQueen();
             board[i].drawQueen(i, -1, DELTA);
-            console.log("DELTA: " + DELTA);
         }
     }
     
