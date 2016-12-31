@@ -2,7 +2,7 @@ var myBoard;
 
 document.addEventListener('DOMContentLoaded', function() {
     myBoard = GenerateBoard();
-    myBoard.drawBoard(5);
+    myBoard.drawBoard(8);
     recursiveTest(0);
 }, false);
 
