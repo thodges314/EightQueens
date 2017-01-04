@@ -2,7 +2,7 @@ var myBoard;
 
 document.addEventListener('DOMContentLoaded', function() {
     myBoard = GenerateBoard();
-    myBoard.drawBoard(8);
+    myBoard.drawBoard(16);
     recursiveTest(0);
 }, false);
 
@@ -82,7 +82,9 @@ function GenerateQueen() {
 function GenerateBoard() {
     var boardSize;
     var board = [];
-    var DELTA = 80;
+    var MAXSIZE = 600;
+    var DELTA;
+    var LINEWIDTH;
     var DROPTIME = 500;
     
     function getSize(){
@@ -100,6 +102,8 @@ function GenerateBoard() {
     //draws a board of size size - intialises the size variable;
     function drawBoard(size){
         boardSize = size;   //set boardSize attribute
+        DELTA = Math.floor(MAXSIZE /  boardSize);
+        LINEWIDTH = Math.ceil(DELTA / 5);
 
         d3.select("svg").attr("style","height: "+size*DELTA+"px; width: "+size*DELTA+"px;");
         //draw boxes
@@ -180,7 +184,7 @@ function GenerateBoard() {
     //draw a horizontal line across the board from point in row i.
     function hLine(i){
         var x1 = scaleUp(0);
-        var x2 = scaleUp(boardSize);
+        var x2 = scaleUp(boardSize - 1);
         var y = scaleUp(i);        
         drawLine(x1, x2, y, y);
         //alert("i:" + i+ " x1:"+x1+ " x2:"+x2+" y1:"+y+ " y2:"+y);
@@ -239,7 +243,7 @@ function GenerateBoard() {
             .attr("y1", y1)
             .attr("y2", y2)
             .style("stroke", "red")
-            .style("stroke-width", "20px")
+            .style("stroke-width", LINEWIDTH + "px")
             .style("opacity", 50);
         }, (DROPTIME/2));
     }
