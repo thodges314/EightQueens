@@ -6,15 +6,17 @@ document.addEventListener('DOMContentLoaded', function() {
     boardControl = GenerateBoardControl();
     myBoard.drawBoard(boardControl.getDimension());
     var dim = boardControl.getDimension();
-    initSelections("#numSqrs", 3, 16, 10);
-    boardControl.faster();
-    boardControl.faster();
-    boardControl.faster();
-    boardControl.setRunning(true);
+    initSelections("#numSqrs", 1, 27, dim);
+    initButtons();
+    //boardControl.faster();
+    //boardControl.faster();
+    //boardControl.faster();
+    boardControl.setRunning(false);
     recursiveTest(0);
 }, false);
 
 function recursiveTest(i) {
+    boardControl.setLastColumn(i);
     steps = myBoard.getSize() - 1;
     if ((! myBoard.getIsWon()) && boardControl.isRunning()){
         if (myBoard.getPositionQueen(i) < steps){
@@ -29,6 +31,8 @@ function recursiveTest(i) {
         }
     } else {
         boardControl.setRunning(false);
+        //$("#startButton").button("toggle");
+        $("#stopButton").button("toggle");
     }
 }
 
@@ -92,9 +96,10 @@ function GenerateQueen() {
 
 function GenerateBoardControl() {
     var running = false;
-    var dimension = 10;
+    var dimension = 4;
     var dropPause = 768;
     var dropTime = 512;
+    var lastColumn = 0;
 
     function isRunning() {
         return running;
@@ -112,12 +117,20 @@ function GenerateBoardControl() {
         return dropTime;
     }
 
+    function getLastColumn(){
+        return lastColumn;
+    }
+
     function setRunning(i) {
         running = i;
     }
 
     function setDimension(i) {
         dimension = i;
+    }
+
+    function setLastColumn(i) {
+        lastColumn = i;
     }
 
     function faster() {
@@ -135,8 +148,10 @@ function GenerateBoardControl() {
         getDimension: getDimension,
         getDropPause: getDropPause,
         getDropTime: getDropTime,
+        getLastColumn: getLastColumn,
         setRunning: setRunning,
         setDimension: setDimension,
+        setLastColumn: setLastColumn,
         faster: faster,
         slower: slower
     }
