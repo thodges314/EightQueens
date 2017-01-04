@@ -1,23 +1,29 @@
 var myBoard;
+var boardControl;
 
 document.addEventListener('DOMContentLoaded', function() {
     myBoard = GenerateBoard();
-    myBoard.drawBoard(16);
+    boardControl = GenerateBoardControl();
+    myBoard.drawBoard(boardControl.getDimension());
+    boardControl.faster();
+    boardControl.faster();
+    boardControl.faster();
     recursiveTest(0);
 }, false);
 
 function recursiveTest(i) {
-    var DROPPAUSE = 700;
     steps = myBoard.getSize() - 1;
-    if (myBoard.getPositionQueen(i) < steps){
-        if (myBoard.downQueen(i) && (i < steps)){
-            setTimeout(function(){new recursiveTest(i + 1)}, DROPPAUSE);
+    if (! myBoard.getIsWon()){
+        if (myBoard.getPositionQueen(i) < steps){
+            if (myBoard.downQueen(i) && (i < steps)){
+                setTimeout(function(){new recursiveTest(i + 1)}, boardControl.getDropPause());
+            } else {
+                setTimeout(function(){new recursiveTest(i)}, boardControl.getDropPause());
+            }
         } else {
-            setTimeout(function(){new recursiveTest(i)}, DROPPAUSE);
+            myBoard.resetQueen(i);
+            setTimeout(function(){new recursiveTest(i - 1)}, boardControl.getDropPause());
         }
-    } else {
-        myBoard.resetQueen(i);
-        setTimeout(function(){new recursiveTest(i - 1)}, DROPPAUSE);
     }
 }
 
@@ -79,6 +85,59 @@ function GenerateQueen() {
     }
 }
 
+function GenerateBoardControl() {
+    var running = false;
+    var dimension = 8;
+    var dropPause = 768;
+    var dropTime = 512;
+
+    function isRunning() {
+        return running;
+    }
+
+    function getDimension() {
+        return dimension;
+    }
+
+    function getDropPause() {
+        return dropPause;
+    }
+
+    function getDropTime(){
+        return dropTime;
+    }
+
+    function setRunning(i) {
+        running = i;
+    }
+
+    function setDimension(i) {
+        dimension = i;
+    }
+
+    function faster() {
+        dropPause/=2;
+        dropTime/=2;
+    }
+
+    function slower() {
+        dropPause*=2;
+        dropTime*=2;
+    }
+
+    return {
+        isRunning: isRunning,
+        getDimension: getDimension,
+        getDropPause: getDropPause,
+        getDropTime: getDropTime,
+        setRunning: setRunning,
+        setDimension: setDimension,
+        faster: faster,
+        slower: slower
+    }
+
+}
+
 function GenerateBoard() {
     var boardSize;
     var board = [];
@@ -86,6 +145,7 @@ function GenerateBoard() {
     var DELTA;
     var LINEWIDTH;
     var DROPTIME = 500;
+    var isWon;
     
     function getSize(){
         return boardSize;
@@ -97,6 +157,14 @@ function GenerateBoard() {
 
     function getPositionQueen(i) {
         return board[i].getJ();
+    }
+
+    function getIsWon() {
+        return isWon;
+    }
+
+    function setIsWon( won ) {
+        isWon = won;
     }
     
     //draws a board of size size - intialises the size variable;
@@ -132,11 +200,11 @@ function GenerateBoard() {
         var isClear = true;
         //check horizontal
         for(k = 0; k<boardSize; k++){
-           if ((board[k].getJ() == j) && (k != i)){
-            hLine(j);
-            isClear = false;
+            if ((board[k].getJ() == j) && (k != i)){
+                hLine(j);
+                isClear = false;
+            };
         };
-    };
         //check diagonal down-right
         if(i >= j){
             var diff = i - j;
@@ -244,8 +312,8 @@ function GenerateBoard() {
             .attr("y2", y2)
             .style("stroke", "red")
             .style("stroke-width", LINEWIDTH + "px")
-            .style("opacity", 50);
-        }, (DROPTIME/2));
+            .style("opacity", 0.8);
+        }, (boardControl.getDropTime()/2));
     }
     
     function clearLines(){
@@ -254,12 +322,13 @@ function GenerateBoard() {
     
     //advances queen in column i down by 1, checks validity, returns true if clear and false if not clear
     function downQueen(i){
-        board[i].downQueen(DROPTIME);
+        board[i].downQueen(boardControl.getDropTime());
+        if(((i+1)== boardSize) && check(i, board[i].getJ())) isWon = true;
         return check(i, board[i].getJ());
     }
     
     function resetQueen(i) {
-        board[i].resetQueen(DROPTIME);
+        board[i].resetQueen(boardControl.getDropTime());
     }
     
     return{
@@ -267,6 +336,8 @@ function GenerateBoard() {
         getSize: getSize,
         getDimensionBox: getDimensionBox,
         getPositionQueen: getPositionQueen,
+        getIsWon: getIsWon,
+        setIsWon: setIsWon,
         check: check,
         clearLines: clearLines,
         downQueen: downQueen,
