@@ -8,12 +8,13 @@ document.addEventListener('DOMContentLoaded', function() {
     boardControl.faster();
     boardControl.faster();
     boardControl.faster();
+    boardControl.setRunning(true);
     recursiveTest(0);
 }, false);
 
 function recursiveTest(i) {
     steps = myBoard.getSize() - 1;
-    if (! myBoard.getIsWon()){
+    if ((! myBoard.getIsWon()) && boardControl.isRunning()){
         if (myBoard.getPositionQueen(i) < steps){
             if (myBoard.downQueen(i) && (i < steps)){
                 setTimeout(function(){new recursiveTest(i + 1)}, boardControl.getDropPause());
@@ -24,6 +25,8 @@ function recursiveTest(i) {
             myBoard.resetQueen(i);
             setTimeout(function(){new recursiveTest(i - 1)}, boardControl.getDropPause());
         }
+    } else {
+        boardControl.setRunning(false);
     }
 }
 
@@ -87,7 +90,7 @@ function GenerateQueen() {
 
 function GenerateBoardControl() {
     var running = false;
-    var dimension = 8;
+    var dimension = 16;
     var dropPause = 768;
     var dropTime = 512;
 
@@ -141,7 +144,7 @@ function GenerateBoardControl() {
 function GenerateBoard() {
     var boardSize;
     var board = [];
-    var MAXSIZE = 600;
+    var MAXSIZE = 500;
     var DELTA;
     var LINEWIDTH;
     var DROPTIME = 500;
