@@ -150,6 +150,11 @@ function GenerateBoardControl() {
         dropTime*=2;
     }
 
+    function resetSpeed() {
+        dropPause = 768;
+        dropTime = 512;
+    }
+
     return {
         isRunning: isRunning,
         getDimension: getDimension,
@@ -160,7 +165,8 @@ function GenerateBoardControl() {
         setDimension: setDimension,
         setLastColumn: setLastColumn,
         faster: faster,
-        slower: slower
+        slower: slower,
+        resetSpeed: resetSpeed
     }
 
 }

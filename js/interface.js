@@ -19,3 +19,15 @@ $('#playButton').click(function() {
 $('#stopButton').click(function() {
 	boardControl.setRunning(false);
 });
+
+$('#slowerButton').click(function() {
+	boardControl.slower();
+});
+
+$('#fasterButton').click(function() {
+	boardControl.faster();
+});
+
+$('#resSpdButton').click(function() {
+	boardControl.resetSpeed();
+});
