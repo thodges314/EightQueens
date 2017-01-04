@@ -4,13 +4,10 @@ var boardControl;
 document.addEventListener('DOMContentLoaded', function() {
     myBoard = GenerateBoard();
     boardControl = GenerateBoardControl();
-    myBoard.drawBoard(boardControl.getDimension());
     var dim = boardControl.getDimension();
+    myBoard.drawBoard(dim);
     initSelections("#numSqrs", 1, 27, dim);
     initButtons();
-    //boardControl.faster();
-    //boardControl.faster();
-    //boardControl.faster();
     boardControl.setRunning(false);
     recursiveTest(0);
 }, false);
@@ -103,7 +100,7 @@ function GenerateQueen() {
 
 function GenerateBoardControl() {
     var running = false;
-    var dimension = 4;
+    var dimension = 8;
     var dropPause = 768;
     var dropTime = 512;
     var lastColumn = 0;

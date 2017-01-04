@@ -33,11 +33,15 @@ $('#resSpdButton').click(function() {
 });
 
 $('#numSqrs').change(function() {
+	boardControl.setRunning(false);
+	d3.selectAll("svg > *").remove();
+	//myBoard = GenerateBoard();
+	boardControl = GenerateBoardControl();
 	boardControl.setDimension($('#numSqrs').val());
-	boardControl.resetSpeed();
-	myBoard = GenerateBoard();
+	//boardControl.setLastColumn(0);
 	var dim = boardControl.getDimension();
 	myBoard.drawBoard(dim);
     initSelections("#numSqrs", 1, 27, dim);
-    recursiveTest(0);
-})
+    initButtons();
+    //recursiveTest(0);
+});
