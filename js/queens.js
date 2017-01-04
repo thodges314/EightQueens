@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function recursiveTest(i) {
     boardControl.setLastColumn(i);
     steps = myBoard.getSize() - 1;
-    if ((! myBoard.getIsWon()) && boardControl.isRunning()){
+    if (boardControl.isRunning()){
         if (myBoard.getPositionQueen(i) < steps){
             if (myBoard.downQueen(i) && (i < steps)){
                 setTimeout(function(){new recursiveTest(i + 1)}, boardControl.getDropPause());
@@ -27,12 +27,19 @@ function recursiveTest(i) {
             }
         } else {
             myBoard.resetQueen(i);
-            setTimeout(function(){new recursiveTest(i - 1)}, boardControl.getDropPause());
+            if(i>0) {
+                setTimeout(function(){new recursiveTest(i - 1)}, boardControl.getDropPause());
+            } else {
+                boardControl.setRunning(false);
+                setTimeout(function(){new recursiveTest(i)}, boardControl.getDropPause());
+            }
         }
     } else {
-        boardControl.setRunning(false);
-        //$("#startButton").button("toggle");
         $("#stopButton").button("toggle");
+    }
+
+    if(myBoard.getIsWon()) {
+        boardControl.setRunning(false);
     }
 }
 

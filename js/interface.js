@@ -12,7 +12,7 @@ function initButtons(){
 
 $('#playButton').click(function() {
 	boardControl.setRunning(true);
-	//recursiveTest(boardControl.getLastColumn());
+	myBoard.setIsWon(false);
 	setTimeout(function(){new recursiveTest(boardControl.getLastColumn())}, boardControl.getDropPause());
 });
 
