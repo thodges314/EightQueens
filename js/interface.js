@@ -31,3 +31,13 @@ $('#fasterButton').click(function() {
 $('#resSpdButton').click(function() {
 	boardControl.resetSpeed();
 });
+
+$('#numSqrs').change(function() {
+	boardControl.setDimension($('#numSqrs').val());
+	boardControl.resetSpeed();
+	myBoard = GenerateBoard();
+	var dim = boardControl.getDimension();
+	myBoard.drawBoard(dim);
+    initSelections("#numSqrs", 1, 27, dim);
+    recursiveTest(0);
+})
