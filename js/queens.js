@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
     myBoard = GenerateBoard();
     boardControl = GenerateBoardControl();
     myBoard.drawBoard(boardControl.getDimension());
+    var dim = boardControl.getDimension();
+    initSelections("#numSqrs", 3, 16, 10);
     boardControl.faster();
     boardControl.faster();
     boardControl.faster();
@@ -90,7 +92,7 @@ function GenerateQueen() {
 
 function GenerateBoardControl() {
     var running = false;
-    var dimension = 16;
+    var dimension = 10;
     var dropPause = 768;
     var dropTime = 512;
 
