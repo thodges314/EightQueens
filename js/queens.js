@@ -5,7 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
     myBoard = GenerateBoard();
     boardControl = GenerateBoardControl();
     var dim = boardControl.getDimension();
-    myBoard.drawBoard(dim);
+    myBoard.initBoard(dim);
+    myBoard.drawBoard();
     initSelections("#numSqrs", 1, 27, dim);
     initButtons();
     boardControl.setRunning(false);
@@ -53,11 +54,17 @@ function GenerateQueen() {
         return jPos;
     }
 
-    function drawQueen(i, j, del) {
+    function setDelta(i) {
+        delta = i;
+    }
+
+    function initQueen(i, j, del) {
         iPos = i;
         jPos = j;
         delta = del;
+    }
 
+    function drawQueen() {
         d3.select("svg")
         .append("circle")
         .attr("id", "q"+iPos)
@@ -92,7 +99,9 @@ function GenerateQueen() {
     return {
         getI: getI,                 //returns i position
         getJ: getJ,                 //returns j position
-        drawQueen: drawQueen,       //instantiates queen with i, j, delta
+        setDelta: setDelta,
+        initQueen: initQueen,       //instantiates queen at i, j, with delta
+        drawQueen: drawQueen,       //draws queen on board
         downQueen: downQueen,       //drops queen one space
         resetQueen: resetQueen      //resets queen to top
     }
@@ -143,8 +152,15 @@ function GenerateBoardControl() {
     }
 
     function slower() {
-        dropPause*=2;
-        dropTime*=2;
+        if(dropPause < 5000) {
+           dropPause*=2;
+            dropTime*=2;
+        }
+    }
+
+    function ludicrousSpeed() {
+        dropPause = 3;
+        dropTime = 2;
     }
 
     function resetSpeed() {
@@ -163,6 +179,7 @@ function GenerateBoardControl() {
         setLastColumn: setLastColumn,
         faster: faster,
         slower: slower,
+        ludicrousSpeed: ludicrousSpeed,
         resetSpeed: resetSpeed
     }
 
@@ -171,7 +188,7 @@ function GenerateBoardControl() {
 function GenerateBoard() {
     var boardSize;
     var board = [];
-    var MAXSIZE = 500;
+    var MAXSIZE = chessCol.clientWidth * 0.8;
     var DELTA;
     var LINEWIDTH;
     var DROPTIME = 500;
@@ -198,12 +215,25 @@ function GenerateBoard() {
     }
     
     //draws a board of size size - intialises the size variable;
-    function drawBoard(size){
+    function initBoard(size){
         boardSize = size;   //set boardSize attribute
+        DELTA = Math.floor(MAXSIZE /  boardSize); //redundant - but needed twice for now
+
+        //populate board with hidden queens
+        for(i = 0; i < boardSize; i++){
+            board[i] = new GenerateQueen();
+            board[i].initQueen(i, -1, DELTA);
+            //board[i].drawQueen();
+        }
+    }
+
+    function drawBoard(){       
         DELTA = Math.floor(MAXSIZE /  boardSize);
         LINEWIDTH = Math.ceil(DELTA / 5);
 
-        d3.select("svg").attr("style","height: "+size*DELTA+"px; width: "+size*DELTA+"px;");
+        d3.selectAll("svg > *").remove();
+
+        d3.select("svg").attr("style","height: "+boardSize*DELTA+"vmin; width: "+boardSize*DELTA+"vmin;");
         //draw boxes
         for(i = 0; i<boardSize; i++){
             for(j = 0; j<boardSize; j++){
@@ -220,8 +250,8 @@ function GenerateBoard() {
         }
         //populate board array with hidden queens
         for(i = 0; i < boardSize; i++){
-            board[i] = new GenerateQueen();
-            board[i].drawQueen(i, -1, DELTA);
+            board[i].setDelta(DELTA);
+            board[i].drawQueen();
         }
     }
     
@@ -360,8 +390,16 @@ function GenerateBoard() {
     function resetQueen(i) {
         board[i].resetQueen(boardControl.getDropTime());
     }
+
+    function redraw() {
+        MAXSIZE = chessCol.clientWidth * 0.8;
+        d3.selectAll("svg > *").remove();
+        //var dim = boardControl.getDimension();
+        myBoard.drawBoard();
+    }
     
     return{
+        initBoard: initBoard,
         drawBoard: drawBoard,
         getSize: getSize,
         getDimensionBox: getDimensionBox,
@@ -371,6 +409,7 @@ function GenerateBoard() {
         check: check,
         clearLines: clearLines,
         downQueen: downQueen,
-        resetQueen: resetQueen
+        resetQueen: resetQueen,
+        redraw: redraw
     }
 }

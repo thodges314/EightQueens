@@ -1,6 +1,9 @@
-.col1{
-	background: #5C7080;
+.chessRow {
+	width: 90vmin;
+	height: 90vmin;
 }
-.col2{
-	background: #6BC0FF;
+
+.chessBoard {
+	width: 100%;
+	height: 100%;
 }
