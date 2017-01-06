@@ -146,6 +146,12 @@ function GenerateBoardControl() {
         lastColumn = i;
     }
 
+    function setSpeed(speed) {
+        //speed = speedSlider.getValue();
+        dropPause = speed;
+        dropTime = speed * 2 / 3;
+    }
+
     function faster() {
         dropPause/=2;
         dropTime/=2;
@@ -177,6 +183,7 @@ function GenerateBoardControl() {
         setRunning: setRunning,
         setDimension: setDimension,
         setLastColumn: setLastColumn,
+        setSpeed: setSpeed,
         faster: faster,
         slower: slower,
         ludicrousSpeed: ludicrousSpeed,

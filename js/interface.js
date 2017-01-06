@@ -32,9 +32,22 @@ $('#ludicrousButton').click(function() {
 	boardControl.ludicrousSpeed();
 });
 
-$('#resSpdButton').click(function() {
-	boardControl.resetSpeed();
+$('#speed').slider({
+	reversed:true
 });
+
+
+
+var localSpeedControl = function(){
+	boardControl.setSpeed(speedSlider.getValue());
+}
+
+var speedSlider = $('#speed').slider().on('slide', localSpeedControl).data('slider');
+
+$('#resSpdButton').click(function() {
+	speedSlider.setValue(768, true);
+});
+
 
 $('#numSqrs').change(function() {
 	boardControl.setRunning(false);
