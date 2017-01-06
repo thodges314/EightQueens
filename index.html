@@ -3,7 +3,6 @@
 <head>
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"></link>
 	<link rel="stylesheet" type="text/css" href="css/bootstrap-slider.min.css"></link>
-	<!-- <link rel="stylesheet" type="text/css" href="css/styles.css"></link> -->
 	<title>8 Queens</title>
 </head>
 <body>
@@ -18,18 +17,9 @@
 				<br><br>
 				<div class="col-xs-12 col-sm-4 panel panel-default">
 					<div class="panel-header">
-						<h4>8 Queens in Action</h4>
+						<h4>Control Panel</h4>
 					</div>
 					<div class = "panel-body">
-						<div class = "row">
-							<div class="col-xs-10 col-xs-offset-1">
-								<label for "numSqrs">size of board:</label>
-								<select class="form-control" id="numSqrs">
-									<!--selections go here -->
-								</select>
-							</div>
-						</div>
-						<br>
 						<div class = "row">
 
 							<div class="col-xs-10 col-md-offset-1 col-md-10">
@@ -39,29 +29,41 @@
 										<input type = "radio" name = "stopPlay"><span class="glyphicon glyphicon-stop"></span>
 									</label>
 									<label class="btn btn-info" id="playButton">
-										<input type = "radio" name = "stopPlay"><span class="glyphicon glyphicon-play"></span>
+										<input type = "radio" name = "stopPlay"><span class="glyphicon glyphicon-play" tooltip = "after a solution is found, press again to search for another solution"></span>
 									</label>
 
 
 								</div>
-							</div>
 
-						</div>
-
-						<div class = "row">
-							<div class="col-xs-6 col-md-offset-1 col-md-3">
+								<br><br>
+								<label for "size">size of board:</label>
+								<input
+								type="text"
+								id = "size"
+								name="somename"
+								data-provide="slider"
+								data-slider-min="1"
+								data-slider-max="27"
+								data-slider-step="1"
+								data-slider-value="8"
+								data-slider-tooltip="show"
+								>
 								<br>
+
+								<br><br>
+								<label for "speed">speed:</label>
 								<input
 								type="text"
 								id = "speed"
 								name="somename"
 								data-provide="slider"
 								data-slider-min="3"
-								data-slider-max="1536"
+								data-slider-max="1152"
 								data-slider-step="0.1"
 								data-slider-value="768"
+								data-slider-tooltip="hide"
 								>
-								<br>
+								<br><br>
 								<button type="button" class="btn btm-default" id="resSpdButton">reset speed</button>
 							</div>
 						</div>

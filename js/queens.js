@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function() {
     var dim = boardControl.getDimension();
     myBoard.initBoard(dim);
     myBoard.drawBoard();
-    initSelections("#numSqrs", 1, 27, dim);
     initButtons();
     boardControl.setRunning(false);
     recursiveTest(0);
@@ -147,26 +146,8 @@ function GenerateBoardControl() {
     }
 
     function setSpeed(speed) {
-        //speed = speedSlider.getValue();
         dropPause = speed;
         dropTime = speed * 2 / 3;
-    }
-
-    function faster() {
-        dropPause/=2;
-        dropTime/=2;
-    }
-
-    function slower() {
-        if(dropPause < 5000) {
-           dropPause*=2;
-            dropTime*=2;
-        }
-    }
-
-    function ludicrousSpeed() {
-        dropPause = 3;
-        dropTime = 2;
     }
 
     function resetSpeed() {
@@ -184,9 +165,6 @@ function GenerateBoardControl() {
         setDimension: setDimension,
         setLastColumn: setLastColumn,
         setSpeed: setSpeed,
-        faster: faster,
-        slower: slower,
-        ludicrousSpeed: ludicrousSpeed,
         resetSpeed: resetSpeed
     }
 
@@ -230,7 +208,6 @@ function GenerateBoard() {
         for(i = 0; i < boardSize; i++){
             board[i] = new GenerateQueen();
             board[i].initQueen(i, -1, DELTA);
-            //board[i].drawQueen();
         }
     }
 
