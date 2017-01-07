@@ -7,6 +7,14 @@
 </head>
 <body>
 	<div class="containter">
+		<h1 align="center">8 Queens Demonstration</h1>
+		<br>
+		<div class = "well col-sm-10 col-sm-offset-1">
+			The 8-Queens problem uses a normal 8 x 8 chessboard.  8 Queens are to be placed on the board such that no two queens attack each other by being in the same row, column or diagonal.<br><br>
+			This page demonstrates a backtracking algorithm to solve 8 Queens.  A backtracking algorithm constructs solutions one component at a time, resulting in a series of partially constructed solutions.  If a new component can be added to a given partially constructed solution without violating any of the problems constraints then a new partial solution is constructed by taking the first available option for the new component.  If a new component cannot be added to a given partial solution, the algorithm backtracks to the last component added to the previous partial solution and advances it to it’s next available option.  If no options remain, the algorithm will back track another time, et cetera.<br><br>
+
+			The backtracking algorithm is significantly more efficient than a direct brute-force approach for solving the 8-Queens problem.  With this simulation, the user can experiment with the algorithm on different sized boards and change the speed of execution.
+		</div>
 		<br>
 		<div class = "well col-sm-10 col-sm-offset-1">
 			<div class="row" id="chessRow">
