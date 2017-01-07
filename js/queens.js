@@ -217,7 +217,7 @@ function GenerateBoard() {
 
         d3.selectAll("svg > *").remove();
 
-        d3.select("svg").attr("style","height: "+boardSize*DELTA+"vmin; width: "+boardSize*DELTA+"vmin;");
+        d3.select("svg").attr("style","height: "+boardSize*DELTA+"px; width: "+boardSize*DELTA+"px;");
         //draw boxes
         for(i = 0; i<boardSize; i++){
             for(j = 0; j<boardSize; j++){
@@ -299,7 +299,6 @@ function GenerateBoard() {
         var x2 = scaleUp(boardSize - 1);
         var y = scaleUp(i);        
         drawLine(x1, x2, y, y);
-        //alert("i:" + i+ " x1:"+x1+ " x2:"+x2+" y1:"+y+ " y2:"+y);
     }
     
     //draw a diagonal line moving down to the right
@@ -378,7 +377,6 @@ function GenerateBoard() {
     function redraw() {
         MAXSIZE = chessCol.clientWidth * 0.8;
         d3.selectAll("svg > *").remove();
-        //var dim = boardControl.getDimension();
         myBoard.drawBoard();
     }
     

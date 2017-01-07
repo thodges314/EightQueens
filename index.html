@@ -12,7 +12,7 @@
 			<div class="row" id="chessRow">
 				<div class="col-xs-12 col-xs-offset-1 col-sm-6" id = "chessCol">
 					<br><br>
-					<svg id = "chessBoard"/>
+					<svg id = "chessBoard" width = "1px" height = "1px"/>
 				</div>
 				<br><br>
 				<div class="col-xs-12 col-sm-4 panel panel-default">
@@ -29,7 +29,7 @@
 										<input type = "radio" name = "stopPlay"><span class="glyphicon glyphicon-stop"></span>
 									</label>
 									<label class="btn btn-info" id="playButton">
-										<input type = "radio" name = "stopPlay"><span class="glyphicon glyphicon-play" tooltip = "after a solution is found, press again to search for another solution"></span>
+										<input type = "radio" name = "stopPlay"><span class="glyphicon glyphicon-play"></span>
 									</label>
 
 
@@ -65,7 +65,12 @@
 								>
 								<br><br>
 								<button type="button" class="btn btm-default" id="resSpdButton">reset speed</button>
+								<br><br>
+								<div class = "panel panel-default" style="height:7em; overflow:auto;">
+									To begin the demonstration, press the <span class="glyphicon glyphicon-play"></span> button.  When a solution is found the demonstration will automatically stop.  Press the <span class="glyphicon glyphicon-play"></span> button again to search for an additional solution.  With the sliders you can try different sized boards and at different speeds.
+								</div>
 							</div>
+
 						</div>
 
 					</div>
